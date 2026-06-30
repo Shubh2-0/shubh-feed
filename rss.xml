@@ -5,9 +5,35 @@
     <link>https://shubhambhati.is-a.dev</link>
     <description>Daily micro-articles and technical tips on Spring Boot, Java and Microservices</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jun 2026 20:05:05 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2026 20:06:34 GMT</lastBuildDate>
 
     <item>
+      <title>Don't Fetch What You Don't Need</title>
+      <link>https://shubhambhati.is-a.dev/posts/don-t-fetch-what-you-don-t-need</link>
+      <description>Ever found yourself fetching a full entity from the database just to check if it exists? You might do `userRepository.findById(id).isPresent()` to confirm. While this works, it often pulls the entire row from your database, maps it to an object and then you just discard most of that work. That&apos;s a performance hit we can avoid.
+
+When your sole purpose is to verify an entity&apos;s existence, `JpaRepository` provides a more efficient method: `existsById(ID id)`.
+
+```java
+// Avoid this for existence checks:
+// Optional&lt;User&gt; user = userRepository.findById(userId);
+// if (user.isPresent()) { /* ... */ }
+
+// Do this instead for better performance:
+if (userRepository.existsById(userId)) {
+    // User exists, now proceed or fetch if actually needed later
+    System.out.println(&quot;User confirmed to exist.&quot;);
+} else {
+    throw new UserNotFoundException(&quot;User not found: &quot; + userId);
+}
+```
+
+This `existsById` call translates to a `SELECT COUNT(*)` query at the database level, which is significantly lighter than a full `SELECT *`. It reduces data transfer, object creation and database load, making your APIs snappier. Small change, big impact.</description>
+      <pubDate>Tue, 30 Jun 2026 20:06:34 GMT</pubDate>
+      <guid isPermaLink="false">don-t-fetch-what-you-don-t-need-1782849994</guid>
+    </item>
+
+<item>
       <title>Turbocharge APIs with Spring Boot Redis Caching</title>
       <link>https://shubhambhati.is-a.dev/posts/turbocharge-apis-with-spring-boot-redis-caching</link>
       <description>You build APIs. Many fetch data that doesn&apos;t change every microsecond. Hitting the database for every request is often a performance bottleneck and a waste of resources. This is where Redis caching becomes your best friend. Spring Boot makes it ridiculously easy.
