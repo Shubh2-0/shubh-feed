@@ -129,7 +129,8 @@ def post_to_devto(api_key, title, body, tags):
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
-            "api-key": api_key
+            "api-key": api_key,
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
         },
         method="POST"
     )
