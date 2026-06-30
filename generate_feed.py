@@ -10,7 +10,7 @@ def strip_oxford_comma(text):
     return _OXFORD_COMMA_RE.sub(' and', text)
 
 def call_gemini(api_key):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     system_instruction = (
         "You are Shubham Bhati, a Java Spring Boot Developer. You write extremely crisp, "
