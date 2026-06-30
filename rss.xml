@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shubham Bhati | Backend Developer Feed</title>
+    <link>https://shubhambhati.is-a.dev</link>
+    <description>Daily micro-articles and technical tips on Spring Boot, Java and Microservices</description>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 30 Jun 2026 18:58:23 GMT</lastBuildDate>
+
+    <item>
+      <title>Turbocharge Read APIs with `@Cacheable` and Redis</title>
+      <link>https://shubhambhati.is-a.dev/posts/turbocharge-read-apis-with-cacheable-and-redis</link>
+      <description>Don&apos;t let your database be the bottleneck for frequently accessed data. If your Spring Boot API constantly fetches &quot;hot&quot; information like product catalogs or popular articles from PostgreSQL, you&apos;re needlessly burning resources. Caching is your immediate win here.
+
+Spring&apos;s `@Cacheable` annotation provides a powerful, declarative way to cache method results. Pair it with Redis as your distributed cache store and watch your API performance soar.
+
+```java
+@Service
+public class ProductService {
+
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Cacheable(value = &quot;products&quot;, key = &quot;#categoryId&quot;)
+    public List&lt;Product&gt; getProductsByCategory(Long categoryId) {
+        // This line only executes if cache misses
+        System.out.println(&quot;Fetching products from DB for category: &quot; + categoryId);
+        return productRepository.findByCategoryId(categoryId);
+    }
+}
+```
+
+With a properly configured `RedisCacheManager` in Spring, this simple annotation ensures `getProductsByCategory` executes its logic only once per `categoryId` until the cache expires. Subsequent calls retrieve data directly from Redis, drastically cutting database load and shaving milliseconds off your response times. Efficient and effective.</description>
+      <pubDate>Tue, 30 Jun 2026 18:58:23 GMT</pubDate>
+      <guid isPermaLink="false">turbocharge-read-apis-with-cacheable-and-redis-1782845903</guid>
+    </item>
+  </channel>
+</rss>
