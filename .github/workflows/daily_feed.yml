@@ -25,6 +25,7 @@ jobs:
       - name: Generate daily micro-article
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
         run: python generate_feed.py
 
       - name: Push RSS feed updates

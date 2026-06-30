@@ -26,7 +26,9 @@ def call_gemini(api_key):
         "2. Include a specific Java/Spring Boot code snippet or system design explanation where relevant.\n"
         "3. Do NOT use hashtags, emojis, or Oxford commas (never put a comma before 'and').\n"
         "4. Avoid formal lectures. Keep it short (under 200 words).\n"
-        "5. Title the post in the first line, starting with 'Title: [Your Title Here]'. The rest should be the body."
+        "5. Title the post on the first line starting with 'Title: [Title]'.\n"
+        "6. Provide 3-4 lowercase tags on the second line starting with 'Tags: tag1, tag2, tag3'.\n"
+        "7. The rest should be the body content."
     )
     
     payload = {
@@ -111,6 +113,36 @@ def update_rss_feed(new_item):
         f.write(footer)
     print("[*] rss.xml feed updated successfully.")
 
+def post_to_devto(api_key, title, body, tags):
+    url = "https://dev.to/api/articles"
+    payload = {
+        "article": {
+            "title": title,
+            "published": True,
+            "body_markdown": body,
+            "tags": tags[:4]  # DEV.to limit is 4 tags
+        }
+    }
+    
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "api-key": api_key
+        },
+        method="POST"
+    )
+    
+    try:
+        with urllib.request.urlopen(req, timeout=15) as response:
+            res_data = json.loads(response.read().decode("utf-8"))
+            print(f"[SUCCESS] Published directly to DEV.to! URL: {res_data.get('url')}")
+            return True
+    except Exception as e:
+        print(f"[ERROR] Failed to publish directly to DEV.to: {e}")
+        return False
+
 def main():
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -122,24 +154,36 @@ def main():
     if not raw_content:
         return
         
-    # Extract Title and Body
+    # Extract Title, Tags, and Body
     lines = raw_content.split("\n")
     title = "Daily Backend Tip"
+    tags = ["programming", "backend", "java"]
     body_lines = []
     
     for line in lines:
         if line.lower().startswith("title:"):
             title = line.split(":", 1)[1].strip()
+        elif line.lower().startswith("tags:"):
+            tags_str = line.split(":", 1)[1].strip()
+            tags = [t.strip() for t in tags_str.split(",") if t.strip()]
         else:
             body_lines.append(line)
             
     body = "\n".join(body_lines).strip()
     
     print(f"[*] Title: {title}")
+    print(f"[*] Tags: {tags}")
     print(f"[*] Body Length: {len(body)} chars")
     
+    # 1. Update RSS feed
     new_item = build_rss_item(title, body)
     update_rss_feed(new_item)
+    
+    # 2. Publish to DEV.to directly if API Key is set
+    devto_key = os.environ.get("DEVTO_API_KEY")
+    if devto_key:
+        print("[*] Publishing directly to DEV.to via API...")
+        post_to_devto(devto_key, title, body, tags)
 
 if __name__ == "__main__":
     main()
