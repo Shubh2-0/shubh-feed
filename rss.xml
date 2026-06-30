@@ -5,9 +5,35 @@
     <link>https://shubhambhati.is-a.dev</link>
     <description>Daily micro-articles and technical tips on Spring Boot, Java and Microservices</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jun 2026 20:26:51 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2026 20:28:45 GMT</lastBuildDate>
 
     <item>
+      <title>Optimize JPA Relationships with getReferenceById</title>
+      <link>https://shubhambhati.is-a.dev/posts/optimize-jpa-relationships-with-getreferencebyid</link>
+      <description>When building relationships in JPA, how do you link a child entity to an existing parent without needlessly hitting the database for the parent&apos;s full data? Don&apos;t reach for `findById` if you only have the parent&apos;s ID.
+
+`repository.findById(id)` *always* fetches the entity from the database. If you just need to set a foreign key, like when creating a `LineItem` and linking it to an `Order`, this is an unnecessary read.
+
+Instead, use `repository.getReferenceById(id)`. This method returns a proxy object, an entity reference, without executing a SELECT query. The database is only hit if you access a field on that proxy *other than its ID*.
+
+```java
+// Assuming Order exists with ID 123
+Order orderRef = orderRepository.getReferenceById(123L);
+
+LineItem newItem = new LineItem();
+newItem.setName(&quot;Awesome Widget&quot;);
+newItem.setPrice(BigDecimal.valueOf(29.99));
+newItem.setOrder(orderRef); // Associates without loading the full Order entity
+
+lineItemRepository.save(newItem); // Only now is the Order ID part of the INSERT
+```
+
+This tiny optimization significantly reduces redundant queries and improves performance in high-volume write operations. Keep your database calls lean.</description>
+      <pubDate>Tue, 30 Jun 2026 20:28:45 GMT</pubDate>
+      <guid isPermaLink="false">optimize-jpa-relationships-with-getreferencebyid-1782851325</guid>
+    </item>
+
+<item>
       <title>Non-Blocking API Calls with Spring WebClient</title>
       <link>https://shubhambhati.is-a.dev/posts/non-blocking-api-calls-with-spring-webclient</link>
       <description>Still using `RestTemplate` for external API calls in your Spring Boot app? You&apos;re likely blocking threads unnecessarily. When a thread waits for an external service, it&apos;s idle but held, limiting your concurrency.
