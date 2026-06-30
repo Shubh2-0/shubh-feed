@@ -5,9 +5,26 @@
     <link>https://shubhambhati.is-a.dev</link>
     <description>Daily micro-articles and technical tips on Spring Boot, Java and Microservices</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jun 2026 20:28:45 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2026 21:17:54 GMT</lastBuildDate>
 
     <item>
+      <title>Beat the N+1 Query Beast in Spring Boot</title>
+      <link>https://shubhambhati.is-a.dev/posts/beat-the-n-1-query-beast-in-spring-boot</link>
+      <description>You&apos;ve got an API fetching a list of parent entities and for each parent you need to display some child data. The common mistake is to let Spring Data JPA fetch the parent list then lazily load children in a loop triggering N+1 queries. That&apos;s a performance killer.
+
+Instead of `List&lt;Parent&gt; findAll();` use a dedicated query to fetch everything upfront.
+
+```java
+@Query(&quot;SELECT p FROM Parent p JOIN FETCH p.children&quot;)
+List&lt;Parent&gt; findAllWithChildren();
+```
+
+This single `SELECT` query grabs all parents *and* their associated children in one shot hydrating your entities properly. For read-heavy operations especially when exposing nested data via DTOs this is a game-changer. Avoids multiple database round trips keeping your API fast and your database happy.</description>
+      <pubDate>Tue, 30 Jun 2026 21:17:54 GMT</pubDate>
+      <guid isPermaLink="false">beat-the-n-1-query-beast-in-spring-boot-1782854274</guid>
+    </item>
+
+<item>
       <title>Optimize JPA Relationships with getReferenceById</title>
       <link>https://shubhambhati.is-a.dev/posts/optimize-jpa-relationships-with-getreferencebyid</link>
       <description>When building relationships in JPA, how do you link a child entity to an existing parent without needlessly hitting the database for the parent&apos;s full data? Don&apos;t reach for `findById` if you only have the parent&apos;s ID.
