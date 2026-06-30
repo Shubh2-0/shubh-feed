@@ -115,12 +115,19 @@ def update_rss_feed(new_item):
 
 def post_to_devto(api_key, title, body, tags):
     url = "https://dev.to/api/articles"
+    # DEV.to tags must be alphanumeric, no spaces, no special characters, limit is 4 tags
+    sanitized_tags = []
+    for tag in tags:
+        clean_tag = re.sub(r'[^a-zA-Z0-9]', '', tag).lower()
+        if clean_tag:
+            sanitized_tags.append(clean_tag)
+            
     payload = {
         "article": {
             "title": title,
             "published": True,
             "body_markdown": body,
-            "tags": tags[:4]  # DEV.to limit is 4 tags
+            "tags": sanitized_tags[:4]
         }
     }
     
