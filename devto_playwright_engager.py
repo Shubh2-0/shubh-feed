@@ -100,7 +100,7 @@ def main():
                 page = context.new_page()
                 page.goto("https://dev.to/enter")
                 # Wait for user to login (wait until user is redirected to home feed or dashboard)
-                page.wait_for_url("https://dev.to/", timeout=120000)
+                page.wait_for_url(re.compile(r"https://dev\.to/(?!\benter\b).*"), timeout=300000)
                 # Save storage state
                 context.storage_state(path=auth_file)
                 print("[SUCCESS] Login session saved locally as auth.json!")
