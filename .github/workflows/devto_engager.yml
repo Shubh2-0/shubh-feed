@@ -31,6 +31,7 @@ jobs:
       - name: Run Auto-Engager
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_AUTH_JSON: ${{ secrets.DEVTO_AUTH_JSON }}
         run: python devto_playwright_engager.py
 
       - name: Commit & Push processed list

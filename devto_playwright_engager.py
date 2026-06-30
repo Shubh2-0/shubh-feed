@@ -68,6 +68,12 @@ def main():
     processed_file = "processed_articles.txt"
     auth_file = "auth.json"
     
+    # Write auth.json from environment secret if running in CI
+    auth_json_content = os.environ.get("DEVTO_AUTH_JSON")
+    if auth_json_content:
+        with open(auth_file, "w", encoding="utf-8") as f:
+            f.write(auth_json_content)
+            
     # Read processed article IDs
     processed_ids = set()
     if os.path.exists(processed_file):
