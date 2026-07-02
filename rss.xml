@@ -5,9 +5,43 @@
     <link>https://shubhambhati.is-a.dev</link>
     <description>Daily micro-articles and technical tips on Spring Boot, Java and Microservices</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Jul 2026 07:55:35 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 02 Jul 2026 06:55:18 GMT</lastBuildDate>
 
     <item>
+      <title>Optimize Read-Heavy API Performance</title>
+      <link>https://shubhambhati.is-a.dev/posts/optimize-read-heavy-api-performance</link>
+      <description>Building read-heavy APIs? Don&apos;t let your ORM do unnecessary work. By default, `@Transactional` implies a write-capable session. For operations that only fetch data, you&apos;re paying for dirty checking and other write-related overhead you simply don&apos;t need.
+
+Marking your service methods with `@Transactional(readOnly = true)` tells Spring and your JPA provider (like Hibernate) that the session is strictly for reads. This allows Hibernate to perform critical optimizations: it won&apos;t flush changes to the database, won&apos;t hold onto entities for dirty checking and can potentially use a read-only JDBC connection if configured.
+
+It&apos;s a small change with a noticeable performance gain, especially under heavy load.
+
+```java
+@Service
+public class ProductService {
+
+    @Transactional(readOnly = true)
+    public List&lt;ProductDTO&gt; getAllProducts() {
+        // Fetch products, map to DTOs
+        return productRepository.findAll().stream()
+               .map(ProductDTO::fromEntity)
+               .toList();
+    }
+
+    @Transactional
+    public Product createProduct(Product product) {
+        // Persist new product
+        return productRepository.save(product);
+    }
+}
+```
+
+This simple tweak keeps your read paths lean and efficient.</description>
+      <pubDate>Thu, 02 Jul 2026 06:55:18 GMT</pubDate>
+      <guid isPermaLink="false">optimize-read-heavy-api-performance-1782975318</guid>
+    </item>
+
+<item>
       <title>Don't Block Your APIs: Go Async with CompletableFuture</title>
       <link>https://shubhambhati.is-a.dev/posts/don-t-block-your-apis-go-async-with-completablefuture</link>
       <description>You&apos;re building an API that needs to hit multiple external services or do heavy computation. If you&apos;re doing this sequentially within a single request thread, you&apos;re blocking your web server and wasting resources. Your API latency shoots up and throughput plummets.
